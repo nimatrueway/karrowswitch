@@ -36,12 +36,6 @@ Below are some generic instructions for how to compile karrowswitch from source.
     $ cmake
     ```
 
-3. Install system-wide using e.g. `sudo` (optional):
-
-    ```
-    $ sudo make install
-    ```
-
 Usage
 -----
 
