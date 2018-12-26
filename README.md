@@ -1,19 +1,19 @@
-KARROWSWITCH
+KArrowSwitch
 =========
 
-karrowswitch adds support for arrow keys in KDE alt+tab task switcher.
-it is very simply implemented. if it detects alt+tab (hence an active task switcher)
-it emulates "tab" key when right/down arrows are pressed, and "shift+tab" for left/up arrows.
+KArrowSwitch adds support for arrow keys in KDE default alt+tab task switcher.
+it is very simply implemented, it detects alt+tab/grave-accent (hence an active task-switcher state)
+then it emulates "tab/grave-accent" key when right/down arrows are pressed, and "shift+tab/grave-accent" for left/up arrows.
 
-karrowswitch is a small desktop-agnostic application that runs in the background
-as a daemon. It borrows its core engine ksuperkey by Hans Chen:
+KArrowSwitch is a small desktop-agnostic application that runs in the background
+as a daemon. It borrows its core engine from _ksuperkey_ by _Hans Chen_:
 https://github.com/hanschen/ksuperkey
 
 Installation
 ------------
 
 There is a binary compiled on Kubuntu 18.04 in the release section.
-Below are some generic instructions for how to compile karrowswitch from source.
+Below are some generic instructions for how to compile KArrowSwitch from source.
 
 1. Install dependencies. 
 
