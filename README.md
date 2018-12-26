@@ -40,12 +40,16 @@ Below are some generic instructions for how to compile KArrowSwitch from source.
 Usage
 -----
 
-    $ karrowswitch [-d]
+    $ karrowswitch [-d] [--no-left-right]
 
 `-d`
 
 Debug mode. Does not fork into the background and logs keyboard events and
 task-switcher detections and key emulations.
+
+`--no-left-right`
+
+Disables detection of left/right arrow keys, so only up/down arrows will be effective.
 
 Contact
 -------
