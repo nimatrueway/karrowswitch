@@ -1,0 +1,9 @@
+karrowswitch
+Makefile
+cmake-build-debug
+cmake-build-release
+CMakeCache.txt
+.directory
+*.cmake
+*.cbp
+.idea

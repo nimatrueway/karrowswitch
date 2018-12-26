@@ -1,0 +1,8 @@
+[Desktop Entry]
+Exec=karrowswitch
+X-DBUS-StartupType=none
+Name=karrowswitch
+Type=Service
+X-KDE-StartupNotify=false
+OnlyShowIn=KDE;
+X-KDE-autostart-phase=2
