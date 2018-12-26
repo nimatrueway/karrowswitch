@@ -1,7 +1,7 @@
 KArrowSwitch
 =========
 
-KArrowSwitch adds support for arrow keys in KDE default alt+tab task switcher.
+KArrowSwitch adds support for arrow keys in KDE default alt+tab/grave-accent task switcher.
 it is very simply implemented, it detects alt+tab/grave-accent (hence an active task-switcher state)
 then it emulates "tab/grave-accent" key when right/down arrows are pressed, and "shift+tab/grave-accent" for left/up arrows.
 
