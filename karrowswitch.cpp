@@ -11,7 +11,7 @@ using std::mutex;
 
 // io
 #include <iostream>
-using std::cout, std::endl;
+using std::cout, std::endl, std::string;
 
 // signal
 #include <csignal>
@@ -38,7 +38,7 @@ namespace X11Handler {
     mutex wait_for_sigterm_sigint{};
     void exit_handler(int signal) {
       if (DEBUG)
-        fprintf(stdout, "Received interrupt/termination signal! (%d)\n", signal);
+        cout << "Received interrupt/termination signal! (" << signal << ")" << endl;
       XLockDisplay (ctrl_conn);
       XRecordDisableContext(ctrl_conn, record_ctx);
       XSync(ctrl_conn, False);
@@ -51,7 +51,7 @@ namespace X11Handler {
         int key_event = data->data[0];
         KeyCode key_code  = data->data[1];
         if (DEBUG)
-          fprintf(stdout, "Intercepted key event %d, key code %d\n", key_event, key_code);
+          cout << "Intercepted key event " << key_event << ", key code " << (int) key_code << endl;
         user_callback(key_code, key_event == KeyPress);
       }
       XUnlockDisplay(ctrl_conn);
@@ -73,45 +73,45 @@ namespace X11Handler {
       retcode = XInitThreads();
       if (!retcode) // check
       {
-        fprintf (stderr, "Failed to initialize threads.\n");
+        cout << "Failed to initialize threads." << endl;
         exit (EXIT_FAILURE);
       }
       data_conn = XOpenDisplay(nullptr);
       ctrl_conn = XOpenDisplay(nullptr);
       if (!(data_conn || ctrl_conn)) // check
       {
-        fprintf (stderr, "Unable to connect to X11 display. Is $DISPLAY set?\n");
+        cout << "Unable to connect to X11 display. Is $DISPLAY set?" << endl;
         exit (EXIT_FAILURE);
       }
       retcode = XQueryExtension(ctrl_conn, "XTEST", &dummy, &dummy, &dummy);
       if (!retcode) // check
       {
-        fprintf (stderr, "Xtst extension missing\n");
+        cout << "Xtst extension missing" << endl;
         exit (EXIT_FAILURE);
       }
       retcode = XRecordQueryVersion(ctrl_conn, &dummy, &dummy);
       if (!retcode) // check
       {
-        fprintf (stderr, "Failed to obtain xrecord version\n");
+        cout << "Failed to obtain xrecord version" << endl;
         exit (EXIT_FAILURE);
       }
       retcode = XkbQueryExtension(ctrl_conn, &dummy, &dummy, &dummy, &dummy, &dummy);
       if (!retcode)
       {
-        fprintf (stderr, "Failed to obtain xkb version\n");
+        cout << "Failed to obtain xkb version" << endl;
         exit (EXIT_FAILURE);
       }
       record_ctx = XRecordCreateContext(ctrl_conn, 0, &client_spec, 1, &record_range_spec, 1);
       if (record_ctx == 0) // check
       {
-        fprintf (stderr, "Failed to create xrecord context\n");
+        cout << "Failed to create xrecord context" << endl;
         exit (EXIT_FAILURE);
       }
       XSync(ctrl_conn, False);
       retcode = XRecordEnableContext (data_conn, record_ctx, parent_handler, nullptr);
       if (!retcode)
       {
-        fprintf (stderr, "Failed to enable xrecord context\n");
+        cout << "Failed to enable xrecord context" << endl;
         exit (EXIT_FAILURE);
       }
       // wait for exit signals
@@ -122,7 +122,7 @@ namespace X11Handler {
       retcode = XRecordFreeContext(ctrl_conn, record_ctx);
       if (!retcode)
       {
-        fprintf (stderr, "Failed to free xrecord context\n");
+        cout << "Failed to free xrecord context" << endl;
       }
       XFree (record_range_spec);
       XCloseDisplay(ctrl_conn);
@@ -206,13 +206,13 @@ void handle(KeyCode key, bool isPressed) {
 int main (int argc, char *argv[]) {
   // parse args
   if (argc == 0) {
-    cout << "Usage: " << "karrowswitch" << " [-d]";
-    fprintf(stdout, "Runs as a daemon unless -d flag is set\n");
+    cout << "Usage: karrowswitch [-d]";
+    cout << "Runs as a daemon unless -d flag is set" << endl;
     return 0;
   }
   DEBUG = false;
   for (int i = 0; i < argc; ++i) {
-    std::string arg = argv[i];
+    string arg = argv[i];
     if (arg == "-d")
       DEBUG = true;
   }
