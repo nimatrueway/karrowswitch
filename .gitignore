@@ -1,9 +1,11 @@
 karrowswitch
 Makefile
+CMakeFiles
 cmake-build-debug
 cmake-build-release
 CMakeCache.txt
 .directory
+install_manifest.txt
 *.cmake
 *.cbp
 .idea

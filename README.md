@@ -33,7 +33,8 @@ Below are some generic instructions for how to compile karrowswitch from source.
     ```
     $ git clone https://github.com/nimatrueway/karrowswitch.git
     $ cd karrowswitch
-    $ cmake
+    $ cmake .
+    $ make
     ```
 
 Usage
