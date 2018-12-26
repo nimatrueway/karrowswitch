@@ -12,7 +12,7 @@ https://github.com/hanschen/ksuperkey
 Installation
 ------------
 
-There is a binary (compiled on Kubuntu 18.04) in the [release section](https://github.com/nimatrueway/karrowswitch/release).
+There is a binary (compiled on Kubuntu 18.04) in the [releases section](https://github.com/nimatrueway/karrowswitch/releases).
 Below are some generic instructions for how to compile KArrowSwitch from source.
 
 1. Install dependencies. 
