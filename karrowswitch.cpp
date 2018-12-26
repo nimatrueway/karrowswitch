@@ -26,6 +26,7 @@ using std::signal;
 // ------------------------------------------------- GLOBALS
 
 bool DEBUG;
+bool NO_LEFT_RIGHT_ARROWS;
 
 // ------------------------------------------------- X11/XTEST ENGINE
 
@@ -170,6 +171,8 @@ void handle(KeyCode key, bool isPressed) {
   auto isArrowForward = (key == KEY_DOWN || key == KEY_RIGHT);
   auto isArrowBackward = (key == KEY_UP || key == KEY_LEFT);
   auto isArrow = isArrowBackward || isArrowForward;
+  if (NO_LEFT_RIGHT_ARROWS)
+    isArrow = key == KEY_DOWN || key == KEY_UP;
 
   if (!isPressed && isAlt) {
     if (DEBUG)
@@ -206,15 +209,19 @@ void handle(KeyCode key, bool isPressed) {
 int main (int argc, char *argv[]) {
   // parse args
   if (argc == 0) {
-    cout << "Usage: karrowswitch [-d]";
-    cout << "Runs as a daemon unless -d flag is set" << endl;
+    cout << "Usage: karrowswitch [-d] [--no-left-right]";
+    cout << "  Runs as a daemon unless -d flag is set" << endl;
+    cout << "  --no-left-right ignores left/right arrow keys" << endl;
     return 0;
   }
+  NO_LEFT_RIGHT_ARROWS = false;
   DEBUG = false;
   for (int i = 0; i < argc; ++i) {
     string arg = argv[i];
     if (arg == "-d")
       DEBUG = true;
+    else if (arg == "--no-left-right")
+      NO_LEFT_RIGHT_ARROWS = true;
   }
   // go !
   if (!DEBUG)
