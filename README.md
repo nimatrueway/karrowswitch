@@ -19,7 +19,7 @@ Below are some generic instructions for how to compile KArrowSwitch from source.
 
    Ubuntu:
     ```
-    $ sudo apt-get install gcc cmake libx11-dev libxtst-dev
+    $ sudo apt-get install gcc cmake build-essential libx11-dev libxtst-dev
     ```
 
     CentOS:
