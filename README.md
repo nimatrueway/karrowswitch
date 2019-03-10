@@ -24,7 +24,7 @@ Below are some generic instructions for how to compile KArrowSwitch from source.
 
     CentOS:
     ```
-    $ sudo yum install gcc cmake libX11-devel libXtst-devel
+    $ sudo yum install gcc cmake build-essential libX11-devel libXtst-devel
     ```
 
 
