@@ -1,9 +1,11 @@
-KArrowSwitch
+PauseChangeFixer
 =========
 
-KArrowSwitch adds support for arrow keys in KDE default (Breeze) alt+tab/grave-accent task switcher.
-it is very simply implemented, it detects alt+tab/grave-accent (hence an active task-switcher state)
-then it emulates "tab/grave-accent" key when right/down arrows are pressed, and "shift+tab/grave-accent" for left/up arrows.
+PauseChangeFixer is a tiny tool for myself, to make golden-dict popup works while I mapped my new BakkerElkhuizen
+keyboard's Pause key to insert. Although through `xmodmap -e "keycode 127 = Insert Insert Insert Insert Insert"` I
+changed my `Pause` key to `Insert` the keycode is still unchanged and golden-dict works based on keycode. I created this
+tool to make my golden-dict popup shortkey `2 x Ctrl+Ins` work by basically detecting `2 x Ctrl+Pause` and then
+simulating the original shortkey. 
 
 KArrowSwitch is a small desktop-agnostic application that runs in the background
 as a daemon. It borrows its core engine from _ksuperkey_ by _Hans Chen_:
@@ -40,16 +42,12 @@ Below are some generic instructions for how to compile KArrowSwitch from source.
 Usage
 -----
 
-    $ karrowswitch [-d] [--no-left-right]
+    $ pause-change-fixer [-d]
 
 `-d`
 
 Debug mode. Does not fork into the background and logs keyboard events and
 task-switcher detections and key emulations.
-
-`--no-left-right`
-
-Disables detection of left/right arrow keys, so only up/down arrows will be effective.
 
 Contact
 -------

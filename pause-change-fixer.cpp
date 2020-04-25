@@ -26,7 +26,6 @@ using std::signal;
 // ------------------------------------------------- GLOBALS
 
 bool DEBUG;
-bool NO_LEFT_RIGHT_ARROWS;
 
 // ------------------------------------------------- X11/XTEST ENGINE
 
@@ -51,8 +50,14 @@ namespace X11Handler {
       if (data->category == XRecordFromServer) {
         int key_event = data->data[0];
         KeyCode key_code  = data->data[1];
-        if (DEBUG)
-          cout << "Intercepted key event " << key_event << ", key code " << (int) key_code << endl;
+        if (DEBUG) {
+          auto event = std::to_string(key_event);
+          if (key_event == KeyPress)
+            event = "PRESSED";
+          else if (key_event == KeyRelease)
+            event = "RELEASED";
+          cout << "Intercepted key event " << event << ", key code " << (int) key_code << endl;
+        }
         user_callback(key_code, key_event == KeyPress);
       }
       XUnlockDisplay(ctrl_conn);
@@ -134,74 +139,48 @@ namespace X11Handler {
 // ------------------------------------------------- APPLICATION LOGIC
 
 const int STATE_IDLE = 0;
-const int STATE_ALT = 1;
-const int STATE_ALT_TAB = 20;
-const int STATE_ALT_GRAVE_ACCENT = 21;
+const int STATE_CONTROL_DOWN = 1;
+const int STATE_PRESSED_ONCE = 2;
 
-const KeySym KEY_LEFT_SHIFT = 50;
-const KeySym KEY_LEFT_ALT = 64;
-const KeySym KEY_RIGHT_ALT = 108;
-const KeySym KEY_TAB = 23;
-const KeySym KEY_GRAVE_ACCENT = 49;
-const KeySym KEY_LEFT = 113;
-const KeySym KEY_UP = 111;
-const KeySym KEY_RIGHT = 114;
-const KeySym KEY_DOWN = 116;
+const KeySym KEY_CONTROL_LEFT_DOWN = 37;
+const KeySym KEY_CONTROL_RIGHT_DOWN = 105;
+const KeySym KEY_INSERT = 118;
+const KeySym KEY_PAUSE = 127;
 
 int state = STATE_IDLE;
 
-void emulate_grave_accent(bool withShift) {
-  if (withShift) X11Handler::send(KEY_LEFT_SHIFT, true);
-  X11Handler::send(KEY_GRAVE_ACCENT, true);
-  X11Handler::send(KEY_GRAVE_ACCENT, false);
-  if (withShift) X11Handler::send(KEY_LEFT_SHIFT, false);
-  X11Handler::flush();
-}
-
-void emulate_tab(bool withShift) {
-  if (withShift) X11Handler::send(KEY_LEFT_SHIFT, true);
-  X11Handler::send(KEY_TAB, true);
-  X11Handler::send(KEY_TAB, false);
-  if (withShift) X11Handler::send(KEY_LEFT_SHIFT, false);
+void emulate_insert() {
+  X11Handler::send(KEY_INSERT, true);
+  X11Handler::send(KEY_INSERT, false);
+  X11Handler::send(KEY_INSERT, true);
+  X11Handler::send(KEY_INSERT, false);
   X11Handler::flush();
 }
 
 void handle(KeyCode key, bool isPressed) {
-  auto isAlt = key == KEY_LEFT_ALT || key == KEY_RIGHT_ALT;
-  auto isArrowForward = (key == KEY_DOWN || key == KEY_RIGHT);
-  auto isArrowBackward = (key == KEY_UP || key == KEY_LEFT);
-  auto isArrow = isArrowBackward || isArrowForward;
-  if (NO_LEFT_RIGHT_ARROWS)
-    isArrow = key == KEY_DOWN || key == KEY_UP;
-
-  if (!isPressed && isAlt) {
-    if (DEBUG)
-      cout << "Alt has been released [state=0]." << endl;
-    state = STATE_IDLE;
+  auto isCtrl = key == KEY_CONTROL_LEFT_DOWN || key == KEY_CONTROL_RIGHT_DOWN;
+  if (isCtrl) {
+    if (state == STATE_IDLE && isPressed) {
+      if (DEBUG)
+        cout << "Ctrl has been pressed [state=1]." << endl;
+      state = STATE_CONTROL_DOWN;
+    } else if (!isPressed) {
+      if (DEBUG)
+        cout << "Ctrl has been released [state=0]." << endl;
+      state = STATE_IDLE;
+    }
     return;
   }
-
-  if (isPressed) {
-    if (state == STATE_IDLE && isAlt) {
+  if (key == KEY_PAUSE && !isPressed) {
+    if (state == STATE_CONTROL_DOWN) {
       if (DEBUG)
-        cout << "Alt has been pressed [state=1]." << endl;
-      state = STATE_ALT;
-    } else if ((state == STATE_ALT || state == STATE_ALT_GRAVE_ACCENT) && key == KEY_TAB) {
+        cout << "Ctrl+Pause has been pressed [state=2]" << endl;
+      state = STATE_PRESSED_ONCE;
+    } else if (state == STATE_PRESSED_ONCE) {
       if (DEBUG)
-        cout << "Alt+Tab has been pressed [state=20]." << endl;
-      state = STATE_ALT_TAB;
-    } else if ((state == STATE_ALT || state == STATE_ALT_TAB) && key == KEY_GRAVE_ACCENT) {
-      if (DEBUG)
-        cout << "Alt+GraveAccent has been pressed [state=21]." << endl;
-      state = STATE_ALT_GRAVE_ACCENT;
-    } else if (isArrow) {
-      if (state == STATE_ALT_TAB) {
-        emulate_tab(isArrowBackward);
-        cout << "Emulated " << (isArrowBackward?"Shift+":"") << "Tab." << endl;
-      } else if (state == STATE_ALT_GRAVE_ACCENT) {
-        emulate_grave_accent(isArrowBackward);
-        cout << "Emulated " << (isArrowBackward?"Shift+":"") << "GraveAccent." << endl;
-      }
+        cout << "Ctrl+Pause has been pressed twice! [state=1]" << endl;
+      state = STATE_CONTROL_DOWN;
+      emulate_insert();
     }
   }
 }
@@ -209,19 +188,15 @@ void handle(KeyCode key, bool isPressed) {
 int main (int argc, char *argv[]) {
   // parse args
   if (argc == 0) {
-    cout << "Usage: karrowswitch [-d] [--no-left-right]";
+    cout << "Usage: pause-change-fixer [-d]";
     cout << "  Runs as a daemon unless -d flag is set" << endl;
-    cout << "  --no-left-right ignores left/right arrow keys" << endl;
     return 0;
   }
-  NO_LEFT_RIGHT_ARROWS = false;
   DEBUG = false;
   for (int i = 0; i < argc; ++i) {
     string arg = argv[i];
     if (arg == "-d")
       DEBUG = true;
-    else if (arg == "--no-left-right")
-      NO_LEFT_RIGHT_ARROWS = true;
   }
   // go !
   if (!DEBUG)

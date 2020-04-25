@@ -1,8 +1,5 @@
 [Desktop Entry]
-Exec=karrowswitch
-X-DBUS-StartupType=none
-Name=karrowswitch
+Exec=pause-change-fixer
+Name=PauseChangeFixer
 Type=Service
-X-KDE-StartupNotify=false
-OnlyShowIn=KDE;
-X-KDE-autostart-phase=2
+Icon=kfourinline

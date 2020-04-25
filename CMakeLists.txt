@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.0)
-project(karrowswitch)
+project(pause-change-fixer)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(karrowswitch karrowswitch.cpp)
-target_link_libraries(karrowswitch -lXtst -lX11 -pthread)
-install(TARGETS karrowswitch DESTINATION /usr/bin/)
+add_executable(pause-change-fixer pause-change-fixer.cpp)
+target_link_libraries(pause-change-fixer -lXtst -lX11 -pthread)
+install(TARGETS pause-change-fixer DESTINATION /usr/bin/)
